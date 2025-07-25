@@ -38,21 +38,6 @@ const Dashboard = () => {
   const [isLoadingSubscription, setIsLoadingSubscription] = useState(true);
   const [filterParams, setFilterParams] = useState<DashboardParams>({});
 
-  // Separate function for fetching subscription data to avoid circular dependencies
-  const fetchSubscriptionIfNeeded = useCallback(async () => {
-    if (!subscription && !isLoadingSubscription) {
-      setIsLoadingSubscription(true);
-      try {
-        const subData = await fetchSubscriptionData();
-        setSubscription(subData);
-      } catch (error) {
-        console.error('Failed to fetch subscription data:', error);
-      } finally {
-        setIsLoadingSubscription(false);
-      }
-    }
-  }, [subscription, isLoadingSubscription]);
-
   const fetchDashboardData = useCallback(async (params: DashboardParams) => {
     try {
       setIsLoadingStats(true);
@@ -64,11 +49,6 @@ const Dashboard = () => {
         setPatientEntries(response.data.patient_entries);
         setAffiliatedHospitalAmount(response.data.affiliated_hospital_amount);
         setReportsPending(response.data.reports_pending_assignment);
-        
-        // Trigger subscription fetch if needed and we have an organization_id
-        if (!subscription && response.data.organization_id) {
-          fetchSubscriptionIfNeeded();
-        }
       } else {
         console.error('Failed to fetch dashboard data:', response.message);
       }
@@ -77,13 +57,31 @@ const Dashboard = () => {
     } finally {
       setIsLoadingStats(false);
     }
-  }, []); // Remove problematic dependencies
+  }, []);
 
-  // Initial data fetch and subscription check
+  const fetchSubscription = useCallback(async () => {
+    if (subscription) return; // Don't fetch if we already have subscription data
+    
+    try {
+      setIsLoadingSubscription(true);
+      const subData = await fetchSubscriptionData();
+      setSubscription(subData);
+    } catch (error) {
+      console.error('Failed to fetch subscription data:', error);
+    } finally {
+      setIsLoadingSubscription(false);
+    }
+  }, [subscription]);
+
+  // Initial data fetch
   useEffect(() => {
     fetchDashboardData(filterParams);
-    fetchSubscriptionIfNeeded();
-  }, [filterParams]); // Only depend on filterParams
+  }, [filterParams, fetchDashboardData]);
+
+  // Separate subscription fetch
+  useEffect(() => {
+    fetchSubscription();
+  }, [fetchSubscription]);
 
   const handleFilterChange = (params: DashboardParams) => {
     setFilterParams(params);
