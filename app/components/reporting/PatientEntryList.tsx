@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { PatientEntryListItem, PatientEntryFilter, getPatientEntries } from '../../services/reportingDoctorService';
 
 interface PatientEntryListProps {
@@ -23,7 +23,7 @@ const PatientEntryList: React.FC<PatientEntryListProps> = ({
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
-  const fetchEntries = async (page: number = 1) => {
+  const fetchEntries = useCallback(async (page: number = 1) => {
     setLoading(true);
     setError(null);
     try {
@@ -37,12 +37,12 @@ const PatientEntryList: React.FC<PatientEntryListProps> = ({
     } finally {
       setLoading(false);
     }
-  };
+  }, [filters]);
 
   useEffect(() => {
     fetchEntries(1);
     setCurrentPage(1);
-  }, [filters, refreshTrigger]);
+  }, [filters, refreshTrigger, fetchEntries]);
 
   const handlePageChange = (page: number) => {
     fetchEntries(page);

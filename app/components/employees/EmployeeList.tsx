@@ -33,7 +33,7 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
         hour: '2-digit',
         minute: '2-digit'
       });
-    } catch (error) {
+    } catch {
       return 'Invalid date';
     }
   };
@@ -89,10 +89,6 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
 
   const canDeleteEmployee = (employee: Employee): boolean => {
     return canEditEmployee(employee);
-  };
-
-  const canViewPassword = (): boolean => {
-    return user?.type === 'Organization Head';
   };
 
   const getEmployeeTypeColor = (type: string): string => {

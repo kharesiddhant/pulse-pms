@@ -6,9 +6,7 @@ import {
   searchPatientsByName, 
   searchPatientsByPhone, 
   searchPatientsByUID, 
-  fetchReferringDoctors,
-  SearchPatient,
-  ReferringDoctor
+  fetchReferringDoctors
 } from '../../services/reportingDoctorService';
 
 interface PatientEntrySearchFiltersProps {

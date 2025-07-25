@@ -152,7 +152,7 @@ const EmployeesPage = () => {
             </svg>
           </div>
           <h2 className="text-xl font-semibold text-gray-800 dark:text-white mb-2">Access Denied</h2>
-          <p className="text-gray-600 dark:text-gray-400">You don't have permission to access this page.</p>
+          <p className="text-gray-600 dark:text-gray-400">You don&apos;t have permission to access this page.</p>
         </div>
       </div>
     );
@@ -164,7 +164,7 @@ const EmployeesPage = () => {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Employees</h1>
-          <p className="mt-2 text-gray-600 dark:text-gray-400">Manage your organization's employees and their access permissions.</p>
+          <p className="mt-2 text-gray-600 dark:text-gray-400">Manage your organization&apos;s employees and their access permissions.</p>
         </div>
         {canCreateEmployee() && (
           <button

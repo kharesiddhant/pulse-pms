@@ -53,7 +53,7 @@ const DashboardFilter = ({ onFilterChange }: DashboardFilterProps) => {
     };
 
     fetchDashboardData();
-  }, []);
+  }, [onFilterChange, selectedPeriod]);
 
   const handleBranchChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const newBranchId = event.target.value;

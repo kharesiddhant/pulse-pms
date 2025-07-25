@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import SubscriptionInfo from './SubscriptionInfo';
 import StatCard from './StatCard';
 import DashboardFilter from './DashboardFilter';
@@ -13,7 +13,7 @@ interface Subscription {
   planEndDate: string;
 }
 
-async function fetchSubscriptionData(organizationId: number): Promise<Subscription> {
+async function fetchSubscriptionData(): Promise<Subscription> {
   return new Promise(resolve => {
     setTimeout(() => {
       resolve({
@@ -38,14 +38,7 @@ const Dashboard = () => {
   const [isLoadingSubscription, setIsLoadingSubscription] = useState(true);
   const [filterParams, setFilterParams] = useState<DashboardParams>({});
 
-  useEffect(() => {
-    if (!subscription) {
-      setIsLoadingSubscription(true);
-    }
-    fetchDashboardData(filterParams);
-  }, [filterParams]);
-
-  const fetchDashboardData = async (params: DashboardParams) => {
+  const fetchDashboardData = useCallback(async (params: DashboardParams) => {
     try {
       setIsLoadingStats(true);
       const response = await dashboardService.getDashboardData(params);
@@ -58,7 +51,7 @@ const Dashboard = () => {
         setReportsPending(response.data.reports_pending_assignment);
         
         if (!subscription && response.data.organization_id) {
-          fetchSubscriptionData(response.data.organization_id)
+          fetchSubscriptionData()
             .then(subData => setSubscription(subData))
             .catch(error => console.error('Failed to fetch subscription data:', error))
             .finally(() => setIsLoadingSubscription(false));
@@ -73,7 +66,14 @@ const Dashboard = () => {
     } finally {
       setIsLoadingStats(false);
     }
-  };
+  }, [subscription, isLoadingSubscription]);
+
+  useEffect(() => {
+    if (!subscription) {
+      setIsLoadingSubscription(true);
+    }
+    fetchDashboardData(filterParams);
+  }, [filterParams, fetchDashboardData, subscription]);
 
   const handleFilterChange = (params: DashboardParams) => {
     setFilterParams(params);

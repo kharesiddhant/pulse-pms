@@ -142,7 +142,7 @@ const EmployeeSearchFilter: React.FC<EmployeeSearchFilterProps> = ({
           
           {filters.searchTerm && (
             <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-              Search: "{filters.searchTerm}"
+              Search: &quot;{filters.searchTerm}&quot;
               <button
                 onClick={() => handleSearchChange({ target: { value: '' } } as React.ChangeEvent<HTMLInputElement>)}
                 className="ml-2 text-blue-600 hover:text-blue-800 dark:text-blue-300 dark:hover:text-blue-100"

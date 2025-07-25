@@ -274,7 +274,7 @@ const DoctorsPage = () => {
   return (
     <>
       <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Doctors</h1>
-      <p className="mt-2 text-gray-600 dark:text-gray-400">Manage your organization's doctors and their access permissions.</p>
+      <p className="mt-2 text-gray-600 dark:text-gray-400">Manage your organization&apos;s doctors and their access permissions.</p>
 
       {/* Filters */}
       <div className="mt-10 mb-10 p-4 flex flex-wrap gap-6">

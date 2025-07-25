@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { 
   PatientEntryDetails as PatientEntryDetailsType, 
   getPatientEntryDetails,
@@ -29,7 +29,7 @@ const PatientEntryDetails: React.FC<PatientEntryDetailsProps> = ({ entryId, onRe
   const [modalTestId, setModalTestId] = useState<number | null>(null);
   const [modalFile, setModalFile] = useState<File | null>(null);
 
-  const fetchDetails = async () => {
+  const fetchDetails = useCallback(async () => {
     if (!entryId) return;
     
     setLoading(true);
@@ -42,11 +42,11 @@ const PatientEntryDetails: React.FC<PatientEntryDetailsProps> = ({ entryId, onRe
     } finally {
       setLoading(false);
     }
-  };
+  }, [entryId]);
 
   useEffect(() => {
     fetchDetails();
-  }, [entryId]);
+  }, [entryId, fetchDetails]);
 
   const updateActionLoading = (actionKey: string, loading: boolean) => {
     setActionLoading(prev => ({ ...prev, [actionKey]: loading }));
@@ -127,7 +127,7 @@ const PatientEntryDetails: React.FC<PatientEntryDetailsProps> = ({ entryId, onRe
     }
   };
 
-  const handleDeleteReport = async (reportId: number, branchTestId: number) => {
+  const handleDeleteReport = async (reportId: number) => {
     if (!details || !confirm('Are you sure you want to delete this report?')) return;
     
     const actionKey = `delete-report-${reportId}`;
@@ -157,27 +157,27 @@ const PatientEntryDetails: React.FC<PatientEntryDetailsProps> = ({ entryId, onRe
     }
   };
 
-  const handleFileUpload = (branchTestId: number, event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      // Validate file type
-      const allowedTypes = ['.pdf'];
-      const fileExtension = '.' + file.name.split('.').pop()?.toLowerCase();
-      if (!allowedTypes.includes(fileExtension)) {
-        alert('Please select a .pdf file');
-        return;
-      }
-      handleUploadReport(branchTestId, file);
-    }
-    // Clear the input value to allow uploading the same file again
-    event.target.value = '';
-  };
+  // const handleFileUpload = (branchTestId: number, event: React.ChangeEvent<HTMLInputElement>) => {
+  //   const file = event.target.files?.[0];
+  //   if (file) {
+  //     // Validate file type
+  //     const allowedTypes = ['.pdf'];
+  //     const fileExtension = '.' + file.name.split('.').pop()?.toLowerCase();
+  //     if (!allowedTypes.includes(fileExtension)) {
+  //       alert('Please select a .pdf file');
+  //       return;
+  //     }
+  //     handleUploadReport(branchTestId, file);
+  //   }
+  //   // Clear the input value to allow uploading the same file again
+  //   event.target.value = '';
+  // };
 
-  const openReportModal = (testId: number, file: File) => {
-    setModalTestId(testId);
-    setModalFile(file);
-    setShowReportModal(true);
-  };
+  // const openReportModal = (testId: number, file: File) => {
+  //   setModalTestId(testId);
+  //   setModalFile(file);
+  //   setShowReportModal(true);
+  // };
   const closeReportModal = () => {
     setShowReportModal(false);
     setModalTestId(null);
@@ -366,7 +366,7 @@ const PatientEntryDetails: React.FC<PatientEntryDetailsProps> = ({ entryId, onRe
                           {actionLoading[`download-report-${test.report!.id}`] ? 'Downloading...' : 'Download'}
                         </button>
                         <button
-                          onClick={() => handleDeleteReport(test.report!.id, test.id)}
+                          onClick={() => handleDeleteReport(test.report!.id)}
                           disabled={actionLoading[`delete-report-${test.report!.id}`]}
                           className="px-6 py-2 bg-red-500 hover:bg-red-600 text-white rounded text-base font-semibold disabled:opacity-50"
                         >

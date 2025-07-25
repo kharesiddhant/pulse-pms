@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import dynamic from 'next/dynamic';
 import { DashboardParams } from '@/services/dashboardService';
 import { config } from '@/config';
@@ -52,7 +52,7 @@ const BranchPerformanceChart: React.FC<BranchPerformanceChartProps> = ({ filterP
     return () => observer.disconnect();
   }, []);
 
-  const fetchChartData = async () => {
+  const fetchChartData = useCallback(async () => {
     try {
       setIsLoading(true);
       setError(null);
@@ -103,16 +103,15 @@ const BranchPerformanceChart: React.FC<BranchPerformanceChartProps> = ({ filterP
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [filterParams]);
 
   useEffect(() => {
     fetchChartData();
-  }, [filterParams]);
+  }, [filterParams, fetchChartData]);
 
   // Use state-based theme detection with fallback
   const textColor = isDarkMode ? '#ffffff' : '#374151';
   const gridColor = isDarkMode ? '#4b5563' : '#e5e7eb';
-  const backgroundColor = isDarkMode ? '#1f2937' : '#ffffff';
 
   // Dynamic formatting function for Y-axis values
   const formatYAxisValue = (value: number) => {
@@ -237,10 +236,10 @@ const BranchPerformanceChart: React.FC<BranchPerformanceChartProps> = ({ filterP
       },
       x: {
         show: true,
-        formatter: function(value: any, { series, seriesIndex, dataPointIndex, w }: any) {
+        formatter: function(value: number, { dataPointIndex, w }: { dataPointIndex: number; w: { globals: { categoryLabels?: string[] } } }) {
           // Get the category label for this data point
           const categories = w.globals.categoryLabels || [];
-          const label = categories[dataPointIndex] || value;
+          const label = categories[dataPointIndex] || String(value);
           
           // Add context based on the period
           if (filterParams.period === 'today') {
@@ -252,7 +251,7 @@ const BranchPerformanceChart: React.FC<BranchPerformanceChartProps> = ({ filterP
           } else if (filterParams.period === 'year') {
             return `Month: ${label}`;
           } else {
-            return label;
+            return String(label);
           }
         },
       },

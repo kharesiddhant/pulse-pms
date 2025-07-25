@@ -162,9 +162,9 @@ const BranchesPage = () => {
       <div className="mb-8 flex flex-wrap justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Branches</h1>
-          <p className="mt-2 text-gray-600 dark:text-gray-400">Manage your organization's branches</p>
+          <p className="mt-2 text-gray-600 dark:text-gray-400">Manage your organization&apos;s branches</p>
         </div>
-        {user.type === 'Organization Head' && (
+        {user.type === "Organization Head" && (
           <button
             onClick={openCreateModal}
             className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors flex items-center"
