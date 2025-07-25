@@ -46,7 +46,7 @@ const PatientEntryDetails: React.FC<PatientEntryDetailsProps> = ({ entryId, onRe
 
   useEffect(() => {
     fetchDetails();
-  }, [entryId, fetchDetails]);
+  }, [fetchDetails]); // Only depend on fetchDetails since entryId is already in its dependencies
 
   const updateActionLoading = (actionKey: string, loading: boolean) => {
     setActionLoading(prev => ({ ...prev, [actionKey]: loading }));

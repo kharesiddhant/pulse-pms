@@ -38,6 +38,21 @@ const Dashboard = () => {
   const [isLoadingSubscription, setIsLoadingSubscription] = useState(true);
   const [filterParams, setFilterParams] = useState<DashboardParams>({});
 
+  // Separate function for fetching subscription data to avoid circular dependencies
+  const fetchSubscriptionIfNeeded = useCallback(async () => {
+    if (!subscription && !isLoadingSubscription) {
+      setIsLoadingSubscription(true);
+      try {
+        const subData = await fetchSubscriptionData();
+        setSubscription(subData);
+      } catch (error) {
+        console.error('Failed to fetch subscription data:', error);
+      } finally {
+        setIsLoadingSubscription(false);
+      }
+    }
+  }, [subscription, isLoadingSubscription]);
+
   const fetchDashboardData = useCallback(async (params: DashboardParams) => {
     try {
       setIsLoadingStats(true);
@@ -50,30 +65,25 @@ const Dashboard = () => {
         setAffiliatedHospitalAmount(response.data.affiliated_hospital_amount);
         setReportsPending(response.data.reports_pending_assignment);
         
+        // Trigger subscription fetch if needed and we have an organization_id
         if (!subscription && response.data.organization_id) {
-          fetchSubscriptionData()
-            .then(subData => setSubscription(subData))
-            .catch(error => console.error('Failed to fetch subscription data:', error))
-            .finally(() => setIsLoadingSubscription(false));
+          fetchSubscriptionIfNeeded();
         }
       } else {
         console.error('Failed to fetch dashboard data:', response.message);
-        if (isLoadingSubscription) setIsLoadingSubscription(false);
       }
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
-      if (isLoadingSubscription) setIsLoadingSubscription(false);
     } finally {
       setIsLoadingStats(false);
     }
-  }, [subscription, isLoadingSubscription]);
+  }, []); // Remove problematic dependencies
 
+  // Initial data fetch and subscription check
   useEffect(() => {
-    if (!subscription) {
-      setIsLoadingSubscription(true);
-    }
     fetchDashboardData(filterParams);
-  }, [filterParams, fetchDashboardData, subscription]);
+    fetchSubscriptionIfNeeded();
+  }, [filterParams]); // Only depend on filterParams
 
   const handleFilterChange = (params: DashboardParams) => {
     setFilterParams(params);

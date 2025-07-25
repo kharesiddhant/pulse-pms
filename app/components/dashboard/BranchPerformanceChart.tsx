@@ -107,7 +107,7 @@ const BranchPerformanceChart: React.FC<BranchPerformanceChartProps> = ({ filterP
 
   useEffect(() => {
     fetchChartData();
-  }, [filterParams, fetchChartData]);
+  }, [fetchChartData]); // Only depend on fetchChartData since filterParams is already in its dependencies
 
   // Use state-based theme detection with fallback
   const textColor = isDarkMode ? '#ffffff' : '#374151';

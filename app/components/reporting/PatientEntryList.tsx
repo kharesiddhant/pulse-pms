@@ -42,7 +42,7 @@ const PatientEntryList: React.FC<PatientEntryListProps> = ({
   useEffect(() => {
     fetchEntries(1);
     setCurrentPage(1);
-  }, [filters, refreshTrigger, fetchEntries]);
+  }, [filters, refreshTrigger]); // Remove fetchEntries from dependencies since it's already included via filters
 
   const handlePageChange = (page: number) => {
     fetchEntries(page);
