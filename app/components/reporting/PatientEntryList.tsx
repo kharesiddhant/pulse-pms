@@ -48,11 +48,6 @@ const PatientEntryList: React.FC<PatientEntryListProps> = ({
     fetchEntries(page);
   };
 
-  const handleViewDocuments = (entry: PatientEntryListItem) => {
-    // TODO: Implement document viewing modal
-    console.log('View documents for entry:', entry.id);
-  };
-
   const getStatusBadgeColor = (status: string) => {
     switch (status) {
       case 'Waiting':
@@ -131,9 +126,6 @@ const PatientEntryList: React.FC<PatientEntryListProps> = ({
                 Status
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                View Documents
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                 C/U By
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
@@ -144,7 +136,7 @@ const PatientEntryList: React.FC<PatientEntryListProps> = ({
           <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
             {entries.length === 0 ? (
               <tr>
-                <td colSpan={7} className="px-6 py-8 text-center text-gray-500 dark:text-gray-400">
+                <td colSpan={6} className="px-6 py-8 text-center text-gray-500 dark:text-gray-400">
                   No patient entries found
                 </td>
               </tr>
@@ -185,21 +177,6 @@ const PatientEntryList: React.FC<PatientEntryListProps> = ({
                     >
                       {entry.status}
                     </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-center">
-                    {entry.documents_count > 0 ? (
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleViewDocuments(entry);
-                        }}
-                        className="inline-flex items-center px-3 py-1 text-xs font-medium text-blue-700 bg-blue-100 rounded-full hover:bg-blue-200 dark:bg-blue-900 dark:text-blue-200 dark:hover:bg-blue-800"
-                      >
-                        View ({entry.documents_count})
-                      </button>
-                    ) : (
-                      <span className="text-gray-400 dark:text-gray-500 text-sm">No docs</span>
-                    )}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm">
